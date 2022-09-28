@@ -11,6 +11,8 @@
     <div id="mediaCtrl">
         <input type="button" id="btn_camera" onclick="toggleMedia(this.id);" value="カメラ: OFF">
         <input type="button" id="btn_mic" onclick="toggleMedia(this.id);" value="マイク: OFF">
+        <input type="button" id="btn_connect" onclick="connect();" value="接続">
+        <input type="button" id="btn_connect" onclick="disconnect();" value="切断" disabled>
     </div>
     <video id="camera_video" width="600" height="400" autoplay></video>
     <script type="text/javascript" src="./index.js"></script>

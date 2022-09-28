@@ -36,11 +36,11 @@ const toggleMedia = (elId) => {
     }
 
     if (!mediaStatus.video && video) {
-        console.log('カメラ停止');
+        console.log('[INFO] Video stopped.');
         video.stop();
     }
     if (!mediaStatus.audio && audio) {
-        console.log('マイク停止');
+        console.log('[INFO] Mic stopped.');
         audio.stop();
     }
 
@@ -51,15 +51,15 @@ const toggleMedia = (elId) => {
     if (!mediaStatus.audio && !mediaStatus.video) return;
 
     // ストリームを設定
-    console.log('ストリームを設定中');
+    console.log('[INFO] Setting streams...');
     navigator.mediaDevices
         .getUserMedia({
             video: mediaStatus.video,
             audio: mediaStatus.audio,
         })
         .then((stream) => {
-            console.log('ストリームの設定完了');
             setStream(videoEl, stream);
+            console.log('[INFO] Stream set successful.');
         })
         .catch((err) => {
             console.error(err);
@@ -67,13 +67,15 @@ const toggleMedia = (elId) => {
                 .getElementById('btn_camera')
                 .setAttribute(
                     'value',
-                    `カメラ: ${mediaStatus.video ? 'ON' : 'OFF'}`
+                    `[INFO] Camera: ${
+                        mediaStatus.video ? 'Enabled' : 'Disabled'
+                    }`
                 );
             document
                 .getElementById('btn_mic')
                 .setAttribute(
                     'value',
-                    `マイク: ${mediaStatus.audio ? 'ON' : 'OFF'}`
+                    `[INFO] Mic: ${mediaStatus.audio ? 'Enabled' : 'Disabled'}`
                 );
             mediaStatus.video = false;
             mediaStatus.audio = false;
@@ -94,4 +96,99 @@ const setStream = (element, stream) => {
         element.volume = 1.0;
         element.muted = false;
     }
+};
+
+let rtcConnection = null;
+
+const connect = () => {
+    // OfferSDPの生成
+    console.log('[INFO] Connecting...');
+    if (rtcConnection) {
+        alert('[ERR] Connection already exists');
+        return;
+    }
+    rtcConnection = createConnection(videoEl.srcObject);
+    const offerSDP = createOfferSDP(rtcConnection);
+};
+
+/**
+ *
+ * @param {MediaProvider} stream
+ * @returns
+ */
+const createConnection = (stream) => {
+    const config = {
+        iceServers: [],
+    };
+    const connection = new RTCPeerConnection(config);
+
+    setupConnectionHandler(connection);
+
+    if (stream) {
+        stream.getTracks().forEach((track) => {
+            connection.addTrack(track, stream);
+        });
+    } else {
+        console.log('[INFO] No stream available');
+    }
+
+    return connection;
+};
+
+/**
+ *
+ * @param {RTCPeerConnection} connection
+ */
+const setupConnectionHandler = (connection) => {
+    connection.onnegotiationneeded = () => {
+        console.log('[EVENT] Negotiation needed');
+    };
+    // ICE関係のイベントは実装しない予定
+    connection.onicecandidate = (event) => {
+        console.log('[EVENT] ICE candidate');
+        if (event.candidate) {
+            console.log(` - ICE candidate: ${event.candidate}`);
+        } else {
+            console.log(' - ICE candidate: Empty');
+        }
+    };
+    connection.onicecandidateerror = (event) => {
+        console.error(`[EVENT] Error on ICE candidate: ${event.errorCode}`);
+    };
+    connection.onicegatheringstatechange = () => {
+        console.log('[EVENT] ICE gathering state change');
+        console.log(` - ICE gathering state: ${connection.iceGatheringState}`);
+        if ('complete' === connection.iceGatheringState) {
+            // OfferSDPの表示
+            console.log(` - Offer SDP:\n${connection.localDescription.sdp}`);
+        }
+    };
+    connection.oniceconnectionstatechange = () => {
+        console.log('[EVENT] ICE connection state change');
+        console.log(
+            ` - ICE connection state: ${connection.iceConnectionState}`
+        );
+    };
+    connection.onsignalingstatechange = () => {
+        console.log('[EVENT] Signaling state change');
+        console.log(` - Signaling state: ${connection.signalingState}`);
+    };
+    connection.ontrack = (event) => {
+        console.log('[EVENT] Track');
+        console.log(` - Stream: ${event.streams[0]}`);
+        console.log(` - Track: ${event.track}`);
+    };
+};
+
+/**
+ *
+ * @param {RTCPeerConnection} connection
+ */
+const createOfferSDP = (connection) => {
+    connection
+        .createOffer()
+        .then((desc) => {
+            return connection.setLocalDescription(desc);
+        })
+        .catch(console.error);
 };
