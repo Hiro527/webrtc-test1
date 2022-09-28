@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebRTC Test / 映像と音声</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <div id="mediaCtrl">
+        <input type="button" id="btn_camera" onclick="toggleMedia(this.id);" value="カメラ: OFF">
+        <input type="button" id="btn_mic" onclick="toggleMedia(this.id);" value="マイク: OFF">
+    </div>
+    <video id="camera_video" width="600" height="400" autoplay></video>
+    <script type="text/javascript" src="./index.js"></script>
+</body>
+
+</html>
