@@ -10,11 +10,17 @@
 <body>
     <div id="mediaCtrl">
         <input type="button" id="btn_camera" onclick="toggleMedia(this.id);" value="カメラ: OFF">
+        <select id="camera_select" onchange="changeCamera(this);">
+            <option value="">カメラを選択</option>
+        </select>
         <input type="button" id="btn_mic" onclick="toggleMedia(this.id);" value="マイク: OFF">
         <input type="button" id="btn_connect" onclick="connect();" value="接続">
         <input type="button" id="btn_connect" onclick="disconnect();" value="切断" disabled>
     </div>
     <video id="camera_video" width="600" height="400" autoplay playsinline></video>
+    <video id="remote_video" width="600" height="400" autoplay playsinline></video><audio id="remote_audio"
+        autoplay></audio>
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./index.js"></script>
 </body>
 

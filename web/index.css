@@ -2,6 +2,7 @@
     margin: 10px;
 }
 
-#camera_video {
+#camera_video,
+#remote_video {
     border: 1px solid black;
 }

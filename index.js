@@ -17,20 +17,20 @@ const io = new Server(server);
 const PORT = 3000;
 
 io.on('connection', (socket) => {
-    console.log(`New connection: ${socket.id}`);
+    console.log(`[INFO] New connection: ${socket.id}`);
 
     socket.on('signaling', (data) => {
-        console.log(`Signaling from ${socket.id}, Type: ${data.type}`);
+        console.log(`[INFO] Signaling from ${socket.id}, Type: ${data.type}`);
         socket.broadcast.emit('signaling', data);
     });
 
     socket.on('disconnect', () => {
-        console.log(`Client disconnected: ${socket.id}`);
+        console.log(`[INFO] Client disconnected: ${socket.id}`);
     });
 });
 
 app.use(express.static(path.join(__dirname, '/web')));
 
 server.listen(PORT, () => {
-    console.log(`Server listening on localhost:3000`);
+    console.log(`[INFO] Server listening on localhost:3000`);
 });

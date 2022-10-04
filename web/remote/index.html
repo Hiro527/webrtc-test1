@@ -9,6 +9,40 @@
 
 <body>
     <video id="camera_video" width="600" height="400" autoplay></video>
+    <table border="1">
+        <tbody>
+            <tr>
+                <td></td>
+                <td>Offer side</td>
+                <td>Answer side</td>
+            </tr>
+            <tr>
+                <td>OfferSDP</td>
+                <td>
+                    <textarea id="textarea_offerside_offsersdp" rows="10" cols="40" readonly="readonly"></textarea>
+                </td>
+                <td>
+                    <br>
+                    <textarea id="textarea_answerside_offsersdp" rows="10" cols="40"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>AnswerSDP</td>
+                <td>
+                    <br>
+                    <textarea id="textarea_offerside_answersdp" rows="10" cols="40"></textarea><br>
+                    <button onclick="onclickButton_SetAnswerSDPthenChatStarts()">Set AnswerSDP. Then the chat
+                        starts.</button>
+                </td>
+                <td>
+                    <button onclick="onclickButton_SetOfferSDPandCreateAnswerSDP()">Set OfferSDP and Create
+                        AnswerSDP.</button>
+                    <br>
+                    <textarea id="textarea_answerside_answersdp" rows="10" cols="40" readonly="readonly"></textarea><br>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <script type="text/javascript" src="./index.js"></script>
 </body>
 
