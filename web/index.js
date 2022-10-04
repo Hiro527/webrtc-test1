@@ -219,6 +219,15 @@ const setupConnectionHandler = (connection) => {
             ` - ICE connection state: ${connection.iceConnectionState}`
         );
     };
+    connection.onconnectionstatechange = () => {
+        console.log(
+            `[EVENT] Conenction state changed: ${connection.connectionState}`
+        );
+        if ('failed' === connection.connectionState) {
+            console.log('[EVENT] Ending connection...');
+            endConnection(rtcConnection);
+        }
+    };
     connection.onsignalingstatechange = () => {
         console.log('[EVENT] Signaling state change');
         console.log(` - Signaling state: ${connection.signalingState}`);
@@ -408,4 +417,24 @@ const changeCamera = (selectEl) => {
                     `マイク: ${mediaStatus.audio ? 'Enabled' : 'Disabled'}`
                 );
         });
+};
+
+/**
+ *
+ * @param {RTCPeerConnection} connection
+ */
+const endConnection = (connection) => {
+    setStream(remoteVideoEl, null);
+    setStream(remoteAudioEl, null);
+
+    rtcConnection = null;
+
+    connection.close();
+};
+
+const disconnect = () => {
+    console.log('[INFO] Disconnecting...');
+    if (rtcConnection) {
+        endConnection(rtcConnection);
+    }
 };
