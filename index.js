@@ -1,12 +1,18 @@
 const express = require('express');
-const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
 const { Server } = require('socket.io');
 
 const app = express();
 
-const httpServer = http.Server(app);
-const io = new Server(httpServer);
+const serverOptions = {
+    key: fs.readFileSync('./cert/localhost-key.pem'),
+    cert: fs.readFileSync('./cert/localhost.pem'),
+};
+
+const server = https.createServer(serverOptions, app);
+const io = new Server(server);
 
 const PORT = 3000;
 
@@ -25,6 +31,6 @@ io.on('connection', (socket) => {
 
 app.use(express.static(path.join(__dirname, '/web')));
 
-httpServer.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server listening on localhost:3000`);
 });
